@@ -135,7 +135,9 @@ def main():
         driver.quit()
 
     try:
-        login_gmail(driver, "Hamza_mohammed15@hotmail.com", "N00bfighter101@")
+        mail = input("Please enter email: ")
+        passwrd = input("Please enter password: ")
+        login_gmail(driver, mail, passwrd)
     except Exception:
         # login failed
         driver.quit()
