@@ -5,16 +5,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from fake_useragent import UserAgent
+from selenium.webdriver.common import keys
 import time 
 import re
 import pandas as pd
 
-# channel_name = []
-# subscriber_count = []
-# joined_date = []
-# Total_channel_views_column = []
-# email_address_column = []
-# contact_info = []
+channel_name = []
+subscriber_count = []
+joined_date = []
+Total_channel_views_column = []
+email_address_column = []
+contact_info = []
 
 # urls = ["https://www.youtube.com/@oxlee/about",
 # "https://www.youtube.com/@officialjulseyhiphop/about",
@@ -43,24 +44,24 @@ import pandas as pd
 # ]
 
 urls = ["https://www.youtube.com/@DebbieDooKidsTV/about"]
-# bulk_list = pd.read_excel('YTData.xlsx', sheet_name=0) # can also index sheet by name or fetch all sheets
-# mylist = bulk_list['URLs'].tolist()
+bulk_list = pd.read_excel('YTData.xlsx', sheet_name=0) # can also index sheet by name or fetch all sheets
+mylist = bulk_list['URLs'].tolist()
 
 def login_gmail(driver, email, passw):
     try:
 
         try:
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,"//*[@id='buttons']/ytd-button-renderer/yt-button-shape/a/yt-touch-feedback-shape/div"))).click()
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,"//*[@id='buttons']/ytd-button-renderer/yt-button-shape/a/yt-touch-feedback-shape/div"))).click()
         except:
             driver.quit()
         #Type the email address 
         
-        emailid = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "identifierId")))
+        emailid = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "identifierId")))
         emailid.send_keys(email)
 
         #Click on the next button 
 
-        nextButton = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "identifierNext")))
+        nextButton = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "identifierNext")))
 
         ActionChains(driver).move_to_element(nextButton).click().perform()
 
@@ -68,13 +69,13 @@ def login_gmail(driver, email, passw):
 
         try:
 
-            passwordid = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "Passwd")))
+            passwordid = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.NAME, "Passwd")))
 
             passwordid.send_keys(passw)
 
         except:
 
-            passwordid = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.NAME, "password")))
+            passwordid = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.NAME, "password")))
 
             passwordid.send_keys(passw)
 
@@ -87,7 +88,7 @@ def login_gmail(driver, email, passw):
 
         ActionChains(driver).move_to_element(signinButton).click().perform()
 
-        time.sleep(30)
+        time.sleep(20)
 
         return True
 
@@ -121,15 +122,15 @@ def main():
     driver = options(url, "no")
     wait_in_seconds = 5
     try:
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, 
-        "//*[@id='yDmH0d']/c-wiz/div/div/div/div[2]/div[1]/div[3]/div[1]/form[2]/div/div/button/span"))).click()
+        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,"//*[@id='content']/div[2]/div[6]/div[1]/ytd-button-renderer[2]/yt-button-shape/button/yt-touch-feedback-shape/div"))).click()
     except:
         driver.quit()
     # WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, 
         # "td.style-scope:nth-child(3) > ytd-button-renderer:nth-child(1) > yt-button-shape:nth-child(1) > button:nth-child(1) > yt-touch-feedback-shape:nth-child(2) > div:nth-child(1) > div:nth-child(2)"))).click()
     
     try:
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,"//*[@id='buttons']/ytd-button-renderer/yt-button-shape/a/yt-touch-feedback-shape/div")))
+        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH,"//*[@id='buttons']/ytd-button-renderer/yt-button-shape/a/yt-touch-feedback-shape/div")))
+        time.sleep(5)
     except:
         driver.quit()
 
@@ -142,51 +143,52 @@ def main():
         
     for y_url in urls:
 
-        driver.execute_script(f'window.open{url}')
+        driver.find_element(By.TAG_NAME, 'body').send_keys(keys + 't') 
+        driver.switch_to.window(driver.window_handles[-1])
         time.sleep(10)
         driver.quit()
 
-    #     try:
-    #         c_name = driver.find_element(By.XPATH, "//*[@id='text']")
-    #         sub_count = driver.find_element(By.XPATH, "//*[@id='subscriber-count']")
-    #         join_date = driver.find_element(By.XPATH, "//*[@id='right-column']/yt-formatted-string[2]/span[2]")
-    #         Total_channel_views = driver.find_element(By.XPATH, "//*[@id='right-column']/yt-formattedtring[3]")
-    #         description = driver.find_element(By.XPATH, '//*[@id="description" and @class="style-scope ytd-channel-about-metadata-renderer"]')
-    #         pattern_email = re.compile("[A-z0-9]+(.)[A-z0-9]+@[a-z]+\.[a-z]{2,3}")
-    #         search_email = pattern_email.search(description.text)
-    #         pattern_info = re.compile("(?:https?:\/\/)?(?:www\.)?(?:twitter|tiktok|facebook|instagram|twitch)?(?:\.com)\/([@a-z+A-Z0-9-_])+")
-    #         search_info = pattern_info.search(description.text)
-    #     except:
-    #         driver.quit()
+        try:
+            c_name = driver.find_element(By.XPATH, "//*[@id='text']")
+            sub_count = driver.find_element(By.XPATH, "//*[@id='subscriber-count']")
+            join_date = driver.find_element(By.XPATH, "//*[@id='right-column']/yt-formatted-string[2]/span[2]")
+            Total_channel_views = driver.find_element(By.XPATH, "//*[@id='right-column']/yt-formattedtring[3]")
+            description = driver.find_element(By.XPATH, '//*[@id="description" and @class="style-scope ytd-channel-about-metadata-renderer"]')
+            pattern_email = re.compile("[A-z0-9]+(.)[A-z0-9]+@[a-z]+\.[a-z]{2,3}")
+            search_email = pattern_email.search(description.text)
+            pattern_info = re.compile("(?:https?:\/\/)?(?:www\.)?(?:twitter|tiktok|facebook|instagram|twitch)?(?:\.com)\/([@a-z+A-Z0-9-_])+")
+            search_info = pattern_info.search(description.text)
+        except:
+            driver.quit()
 
-    #     channel_name.append(c_name.text)
-    #     Total_channel_views_column.append(Total_channel_views.text)
-    #     subscriber_count.append(sub_count.text)
-    #     joined_date.append(join_date.text)
+        channel_name.append(c_name.text)
+        Total_channel_views_column.append(Total_channel_views.text)
+        subscriber_count.append(sub_count.text)
+        joined_date.append(join_date.text)
 
-    #     if search_email is None:
-    #         email_address_column.append("N/A")
-    #     else:
-    #         email_address_column.append(search_email.group())
+        if search_email is None:
+            email_address_column.append("N/A")
+        else:
+            email_address_column.append(search_email.group())
 
-    #     if search_info is None:
-    #         contact_info.append("N/A")
-    #     else:
-    #         contact_info.append(search_info.group())
+        if search_info is None:
+            contact_info.append("N/A")
+        else:
+            contact_info.append(search_info.group())
         
-    #     print(c_name.text, Total_channel_views.text)
+        print(c_name.text, Total_channel_views.text)
 
-    #     driver.close()
+        driver.close()
 
-    #     time.sleep(wait_in_seconds)
+        time.sleep(wait_in_seconds)
     
-    # driver.quit()
+    driver.quit()
 
-    # df = pd.DataFrame({"Channel Name": channel_name, "Total Channel views": Total_channel_views_column,
-    #                                 "Subscriber Count": subscriber_count, "Date joined": joined_date, "Email Address": email_address_column,
-    #                                     "Contact Info": contact_info})
+    df = pd.DataFrame({"Channel Name": channel_name, "Total Channel views": Total_channel_views_column,
+                                    "Subscriber Count": subscriber_count, "Date joined": joined_date, "Email Address": email_address_column,
+                                        "Contact Info": contact_info})
 
-    # df.to_excel("Data_saved.xlsx")
+    df.to_excel("Data_saved.xlsx")
 
 
 if __name__ == "__main__":
