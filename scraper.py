@@ -148,7 +148,6 @@ def main():
         driver.find_element(By.TAG_NAME, 'body').send_keys(keys + 't') 
         driver.switch_to.window(driver.window_handles[-1])
         time.sleep(10)
-        driver.quit()
 
         try:
             c_name = driver.find_element(By.XPATH, "//*[@id='text']")
